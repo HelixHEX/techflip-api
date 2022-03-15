@@ -1,9 +1,6 @@
-import 'express'
-
-declare module 'express' {
-  interface Request {
-    session?: {
-      user: any
-    }
+import "express-session";
+declare module "express-session" {
+  interface SessionData {
+    user: any;
   }
 }
