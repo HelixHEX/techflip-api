@@ -14,9 +14,9 @@ router.get('/current-session', async(req: express.Request, res: express.Response
     res.status(401).send({success: false, message: 'Unauthorized'});
     return
   }
-  const {password, ...other} = user
-  const sessionId = req.sessionID
-  res.status(200).json({success: true, user: other, sessionId});
+  let {password, createdAt, updatedAt, ...other} = user
+  other = {...other, sessionId: req.sessionID}
+  res.status(200).json({success: true, user: other});
 })
 
 router.post("/login", async (req: express.Request, res: express.Response) => {

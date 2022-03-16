@@ -37,9 +37,9 @@ router.get('/current-session', (req, res) => __awaiter(void 0, void 0, void 0, f
         res.status(401).send({ success: false, message: 'Unauthorized' });
         return;
     }
-    const { password } = user, other = __rest(user, ["password"]);
-    const sessionId = req.sessionID;
-    res.status(200).json({ success: true, user: other, sessionId });
+    let { password, createdAt, updatedAt } = user, other = __rest(user, ["password", "createdAt", "updatedAt"]);
+    other = Object.assign(Object.assign({}, other), { sessionId: req.sessionID });
+    res.status(200).json({ success: true, user: other });
 }));
 router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
