@@ -7,6 +7,18 @@ const router = express.Router();
 
 const saltRounds = 10;
 
+router.get('/current-session', async(req: express.Request, res: express.Response) => {
+  console.log(req.session.user)
+  const user = req.session?.user;
+  if(!user) {
+    res.status(401).send({success: false, message: 'Unauthorized'});
+    return
+  }
+  const {password, ...other} = user
+  const sessionId = req.sessionID
+  res.status(200).json({success: true, user: other, sessionId});
+})
+
 router.post("/login", async (req: express.Request, res: express.Response) => {
   const { email, password } = req.body;
   try {
@@ -15,21 +27,28 @@ router.post("/login", async (req: express.Request, res: express.Response) => {
         .status(400)
         .json({ success: false, message: "Incorrect email or password" });
     } else {
+
       const user = await prisma.user.findUnique({ where: { email } });
       if (user) {
+        console.log('hi')
         let checkPass = await bcrypt.compare(password, user.password);
         if (checkPass) {
           req.session!.user = user;
-          res.status(200).json({ success: true });
+          res.status(200).json({ success: true, sessionId: req.sessionID });
         } else {
           res
-            .status(400)
+            .status(40)
             .json({ success: false, message: "Incorrect email or password" });
         }
+      } else {
+        res
+        .status(400)
+        .json({ success: false, message: "Incorrect email or password" });
       }
     }
   } catch (e) {
-    res.status(500).json({ success: false, message: e.message });
+    console.log(e)
+    res.status(500).json({ success: false, message: "An error has occurred" });
   }
 });
 
@@ -50,7 +69,7 @@ router.post("/signup", async (req: express.Request, res: express.Response) => {
           });
           if (user) {
             req.session!.user = user;
-            res.json({ success: true });
+            res.json({ success: true, sessionId: req.sessionID });
           } else {
             res.json({ success: false, message: "An error has occurred" });
           }

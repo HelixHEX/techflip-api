@@ -27,8 +27,13 @@ const main = () => {
       ":remote-user [:date[clf]] ':method :status :url HTTP/:http-version' :body ':user-agent' - :response-time ms"
     )
   );
+  //   var corsOptions = {
+  //     origin: '*',
+  //     credentials: true };
 
-  app.use(cors({ origin: ["http://localhost:3000"] }));
+  // app.use(cors(corsOptions));
+  app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+
 
   app.use(express.json());
 
@@ -62,7 +67,7 @@ const main = () => {
     next: express.NextFunction
   ) => {
     if (!req.session || !req.session.user) {
-      res.status(401).send("Unauthorized");
+      res.status(401).json({ success: false, message: "Unauthorized" });
       return;
     }
     next();
