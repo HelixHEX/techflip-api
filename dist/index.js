@@ -30,7 +30,7 @@ const main = () => {
         resave: false,
         saveUninitialized: false,
         cookie: {
-            secure: false,
+            secure: true,
             httpOnly: true,
             maxAge: 1000 * 60 * 30,
             sameSite: "lax",

@@ -50,7 +50,7 @@ const main = () => {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: false, // if true: only transmit cookie over https, in prod, always activate this
+        secure: true, // if true: only transmit cookie over https, in prod, always activate this
         httpOnly: true, // if true: prevents client side JS from reading the cookie
         maxAge: 1000 * 60 * 30, // session max age in milliseconds
         // explicitly set cookie to lax
