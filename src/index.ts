@@ -37,7 +37,7 @@ const main = () => {
   //     credentials: true };
 
   // app.use(cors(corsOptions));
-  app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+  app.use(cors({ origin: ["http://localhost:3000", 'https://techflip.vercel.app', 'https://dev-techflip.vercel.app'], credentials: true }));
 
 
   app.use(express.json());

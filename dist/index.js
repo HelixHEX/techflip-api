@@ -22,7 +22,7 @@ const main = () => {
     const app = express_1.default();
     morgan_1.default.token("body", (req, res) => JSON.stringify(req.body));
     app.use(morgan_1.default(":remote-user [:date[clf]] ':method :status :url HTTP/:http-version' :body ':user-agent' - :response-time ms"));
-    app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+    app.use(cors({ origin: ["http://localhost:3000", 'https://techflip.vercel.app', 'https://dev-techflip.vercel.app'], credentials: true }));
     app.use(express_1.default.json());
     app.use(session({
         store: new RedisStore({ client: redisClient }),
