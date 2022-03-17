@@ -3,5 +3,6 @@ declare namespace NodeJS {
     PORT: string;
     DATABASE_URL: string;
     SESSION_SECRET: string;
+    REDIS_URL: string;
   }
 }

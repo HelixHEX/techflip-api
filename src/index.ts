@@ -4,6 +4,8 @@ import "reflect-metadata";
 import express from "express";
 import morgan from "morgan";
 
+const url = require('url')
+
 const session = require("express-session");
 const connectRedis = require("connect-redis");
 const redis = require("redis");
@@ -14,8 +16,11 @@ const auth = require("./routes/auth");
 const posts = require("./routes/posts");
 const listings = require("./routes/listings");
 
+const redisURL = url.parse(process.env.REDIS_URL);
 const RedisStore = connectRedis(session);
-const redisClient = redis.createClient();
+const redisClient = redis.createClient({url: process.env.REDIS_URL, no_ready_check: true});
+// redisClient.auth(redisURL.auth.split(':')[1])
+
 
 const main = () => {
   const app = express();
