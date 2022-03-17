@@ -29,7 +29,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const prisma = new client_1.PrismaClient();
 const router = express_1.default.Router();
 const saltRounds = 10;
-router.get('/current-session', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/current-session', (req, res) => {
     var _a;
     console.log(req.session.user);
     const user = (_a = req.session) === null || _a === void 0 ? void 0 : _a.user;
@@ -40,7 +40,7 @@ router.get('/current-session', (req, res) => __awaiter(void 0, void 0, void 0, f
     let { password, createdAt, updatedAt } = user, other = __rest(user, ["password", "createdAt", "updatedAt"]);
     other = Object.assign(Object.assign({}, other), { sessionId: req.sessionID });
     res.status(200).json({ success: true, user: other });
-}));
+});
 router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {

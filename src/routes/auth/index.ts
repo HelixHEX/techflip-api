@@ -7,7 +7,7 @@ const router = express.Router();
 
 const saltRounds = 10;
 
-router.get('/current-session', async(req: express.Request, res: express.Response) => {
+router.get('/current-session', (req: express.Request, res: express.Response) => {
   console.log(req.session.user)
   const user = req.session?.user;
   if(!user) {
