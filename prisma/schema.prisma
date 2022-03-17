@@ -46,7 +46,7 @@ model Post {
   creator_id String
   upvotes    Upvote[]   @relation()
   downvotes  Downvote[] @relation()
-  votes      Int
+  votes      Int        @default(0)
   comments    Comment[]
 }
 

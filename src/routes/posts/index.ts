@@ -129,4 +129,39 @@ router.get('/user/:id', async(req: express.Request, res: express.Response) => {
   }
 })
 
+//create comment
+router.post('/comment/:id', async(req: express.Request, res: express.Response) => {
+  let { id } = req.params;
+  const {content} = req.body
+  try {
+    if(content === "") {
+      res.status(400).json({success: false, message: "Missing data"});
+    }
+    const post = await prisma.post.findUnique({where: {id: parseInt(id)}, include: {creator: true}});
+    if (!post) {
+      res.status(404).json({success: false, message: "Post not found"});
+    } else {
+      const comment = await prisma.comment.create({
+        data: {
+          content,
+          post: {
+            connect: {
+              id: parseInt(id)
+            }
+          },
+          creator: {
+            connect: {
+              id: req.session.user.id
+            }
+          }
+        }
+      });
+      res.status(200).json({success: true, comment});
+    }
+  } catch (e) {
+    console.log(e)
+    res.status(500).json({success: false, message: "An error has occurred"});
+  }
+})
+
 module.exports = router;
