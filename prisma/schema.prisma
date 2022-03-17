@@ -11,14 +11,17 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
+  id        String     @id @default(uuid())
   name      String
-  email     String    @unique
+  email     String     @unique
   password  String
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
   listings  Listing[]
   posts     Post[]
+  upvotes   Upvote[]   @relation()
+  downvotes Downvote[] @relation()
+  comments  Comment[]  @relation()
 }
 
 model Listing {
@@ -34,11 +37,44 @@ model Listing {
 }
 
 model Post {
-  id         Int      @id @default(autoincrement())
+  id         Int        @id @default(autoincrement())
   title      String
   content    String
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+  creator    User       @relation(fields: [creator_id], references: [id])
+  creator_id String
+  upvotes    Upvote[]   @relation()
+  downvotes  Downvote[] @relation()
+  votes      Int
+  comments    Comment[]
+}
+
+model Upvote {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  post      Post     @relation(fields: [post_id], references: [id])
+  post_id   Int
+  user      User     @relation(fields: [user_id], references: [id])
+  user_id   String
+}
+
+model Downvote {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  post      Post     @relation(fields: [post_id], references: [id])
+  post_id   Int
+  user      User     @relation(fields: [user_id], references: [id])
+  user_id   String
+}
+
+model Comment {
+  id         Int      @id @default(autoincrement())
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
+  post       Post     @relation(fields: [post_id], references: [id])
+  post_id    Int
+  content    String
   creator    User     @relation(fields: [creator_id], references: [id])
   creator_id String
 }

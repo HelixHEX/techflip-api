@@ -24,7 +24,7 @@ router.post('/new', async (req:express.Request, res:express.Response) => {
         }
       }
     });
-    res.status(200).json({success: true, post});
+    res.status(200).json({success: true});
   } catch (e) {
     console.log(e)
     res.status(500).json({success: false, message: "An error has occurred"});
@@ -35,7 +35,7 @@ router.get('/', async (_, res:express.Response) => {
   try {
     const listings = await prisma.listing.findMany({
       include: {
-        creator: true
+        creator: {select: {name: true, email: true, id: true}}
       }
     });
     res.status(200).json({success: true, listings});
@@ -53,7 +53,7 @@ router.get('/:id', async (req:express.Request, res:express.Response) => {
         id: parseInt(id)
       },
       include: {
-        creator: true
+        creator: {select: {name: true, email: true, id: true}}
       }
     });
     res.status(200).json({success: true, post});
@@ -88,7 +88,6 @@ router.put('/:id', async(req: express.Request, res: express.Response) => {
     } else {
       res.status(404).json({success: false, message: "Post not found"});
     }
-    res.status(200).json({success: true, post});
   } catch (e) {
     console.log(e)
     res.status(500).json({success: false, message: "An error has occurred"});

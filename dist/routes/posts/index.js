@@ -44,7 +44,7 @@ router.get('/', (_, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const posts = yield prisma.post.findMany({
             include: {
-                creator: true
+                creator: { select: { name: true, email: true, id: true } }
             }
         });
         res.status(200).json({ success: true, posts });
@@ -62,7 +62,7 @@ router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 id: parseInt(id)
             },
             include: {
-                creator: true
+                creator: { select: { name: true, email: true, id: true } }
             }
         });
         res.status(200).json({ success: true, post });
@@ -127,7 +127,7 @@ router.get('/user/:id', (req, res) => __awaiter(void 0, void 0, void 0, function
                 creator_id: id
             },
             include: {
-                creator: true
+                creator: { select: { name: true, email: true, id: true } }
             }
         });
         res.status(200).json({ success: true, posts });

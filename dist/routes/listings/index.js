@@ -36,7 +36,7 @@ router.post('/new', (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 }
             }
         });
-        res.status(200).json({ success: true, post });
+        res.status(200).json({ success: true });
     }
     catch (e) {
         console.log(e);
@@ -47,7 +47,7 @@ router.get('/', (_, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const listings = yield prisma.listing.findMany({
             include: {
-                creator: true
+                creator: { select: { name: true, email: true, id: true } }
             }
         });
         res.status(200).json({ success: true, listings });
@@ -65,7 +65,7 @@ router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 id: parseInt(id)
             },
             include: {
-                creator: true
+                creator: { select: { name: true, email: true, id: true } }
             }
         });
         res.status(200).json({ success: true, post });
@@ -102,7 +102,6 @@ router.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         else {
             res.status(404).json({ success: false, message: "Post not found" });
         }
-        res.status(200).json({ success: true, post });
     }
     catch (e) {
         console.log(e);

@@ -34,7 +34,7 @@ router.get('/', async(_, res: express.Response) => {
   try {
     const posts = await prisma.post.findMany({
       include: {
-        creator: true
+        creator: {select: {name: true, email: true, id: true}}
       }
     });
     res.status(200).json({success: true, posts});
@@ -53,8 +53,8 @@ router.get('/:id', async(req: express.Request, res: express.Response) => {
         id: parseInt(id)
       },
       include: {
-        creator: true
-      }
+        creator: {select: {name: true, email: true, id: true}}
+       }
     });
     res.status(200).json({success: true, post});
   } catch (e) {
@@ -119,7 +119,7 @@ router.get('/user/:id', async(req: express.Request, res: express.Response) => {
         creator_id: id
       },
       include: {
-        creator: true
+        creator: {select: {name: true, email: true, id: true}}
       }
     });
     res.status(200).json({success: true, posts});
