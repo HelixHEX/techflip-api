@@ -28,13 +28,14 @@ router.post("/login", async (req: express.Request, res: express.Response) => {
         .json({ success: false, message: "Incorrect email or password" });
     } else {
 
-      const user = await prisma.user.findUnique({ where: { email } });
+      let user = await prisma.user.findUnique({ where: { email } });
       if (user) {
         console.log('hi')
         let checkPass = await bcrypt.compare(password, user.password);
         if (checkPass) {
-          req.session!.user = user;
-          res.status(200).json({ success: true, sessionId: req.sessionID });
+          let {password, ...other} = user
+          req.session!.user = other;
+          res.status(200).json({ success: true, user: other});
         } else {
           res
             .status(40)

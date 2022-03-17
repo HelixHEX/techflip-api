@@ -50,13 +50,14 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 .json({ success: false, message: "Incorrect email or password" });
         }
         else {
-            const user = yield prisma.user.findUnique({ where: { email } });
+            let user = yield prisma.user.findUnique({ where: { email } });
             if (user) {
                 console.log('hi');
                 let checkPass = yield bcrypt_1.default.compare(password, user.password);
                 if (checkPass) {
-                    req.session.user = user;
-                    res.status(200).json({ success: true, sessionId: req.sessionID });
+                    let { password } = user, other = __rest(user, ["password"]);
+                    req.session.user = other;
+                    res.status(200).json({ success: true, user: other });
                 }
                 else {
                     res
