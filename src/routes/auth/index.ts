@@ -35,6 +35,7 @@ router.post("/login", async (req: express.Request, res: express.Response) => {
         if (checkPass) {
           let {password, ...other} = user
           req.session!.user = other;
+          console.log(req.session.user)
           res.status(200).json({ success: true, user: other});
         } else {
           res
