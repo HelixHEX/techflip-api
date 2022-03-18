@@ -16,14 +16,14 @@ const express_1 = __importDefault(require("express"));
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const router = express_1.default.Router();
-router.post('/new', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/new", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { title, description, image, price } = req.body;
     try {
         if (title === "" || description === "") {
             res.status(400).json({ success: false, message: "Missing data" });
             return;
         }
-        const post = yield prisma.listing.create({
+        yield prisma.listing.create({
             data: {
                 title,
                 description,
@@ -31,10 +31,10 @@ router.post('/new', (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 image,
                 creator: {
                     connect: {
-                        id: req.session.user.id
-                    }
-                }
-            }
+                        id: req.session.user.id,
+                    },
+                },
+            },
         });
         res.status(200).json({ success: true });
     }
@@ -43,12 +43,12 @@ router.post('/new', (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(500).json({ success: false, message: "An error has occurred" });
     }
 }));
-router.get('/', (_, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/", (_, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const listings = yield prisma.listing.findMany({
             include: {
-                creator: { select: { name: true, email: true, id: true } }
-            }
+                creator: { select: { name: true, email: true, id: true } },
+            },
         });
         res.status(200).json({ success: true, listings });
     }
@@ -57,16 +57,16 @@ router.get('/', (_, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(500).json({ success: false, message: "An error has occurred" });
     }
 }));
-router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
     try {
         const post = yield prisma.listing.findUnique({
             where: {
-                id: parseInt(id)
+                id: parseInt(id),
             },
             include: {
-                creator: { select: { name: true, email: true, id: true } }
-            }
+                creator: { select: { name: true, email: true, id: true } },
+            },
         });
         res.status(200).json({ success: true, post });
     }
@@ -75,23 +75,26 @@ router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(500).json({ success: false, message: "An error has occurred" });
     }
 }));
-router.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
     const { title, description, image, price } = req.body;
     try {
-        const post = yield prisma.listing.findUnique({ where: { id: parseInt(id) }, include: { creator: true } });
+        const post = yield prisma.listing.findUnique({
+            where: { id: parseInt(id) },
+            include: { creator: true },
+        });
         if (post) {
             if (post.creator_id === req.session.user.id) {
                 const updatedPost = yield prisma.listing.update({
                     where: {
-                        id: parseInt(id)
+                        id: parseInt(id),
                     },
                     data: {
                         title,
                         description,
                         image,
-                        price
-                    }
+                        price,
+                    },
                 });
                 res.status(200).json({ success: true, updatedPost });
             }
@@ -108,16 +111,19 @@ router.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(500).json({ success: false, message: "An error has occurred" });
     }
 }));
-router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.delete("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { id } = req.params;
     try {
-        const post = yield prisma.listing.findUnique({ where: { id: parseInt(id) }, include: { creator: true } });
+        const post = yield prisma.listing.findUnique({
+            where: { id: parseInt(id) },
+            include: { creator: true },
+        });
         if (post) {
             if (post.creator_id === req.session.user.id) {
                 yield prisma.listing.delete({
                     where: {
-                        id: parseInt(id)
-                    }
+                        id: parseInt(id),
+                    },
                 });
                 res.status(200).json({ success: true, message: "Post deleted" });
             }

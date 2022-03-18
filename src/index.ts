@@ -4,8 +4,6 @@ import "reflect-metadata";
 import express from "express";
 import morgan from "morgan";
 
-const url = require('url')
-
 const session = require("express-session");
 const connectRedis = require("connect-redis");
 const redis = require("redis");
@@ -16,11 +14,8 @@ const auth = require("./routes/auth");
 const posts = require("./routes/posts");
 const listings = require("./routes/listings");
 
-const redisURL = url.parse(process.env.REDIS_URL);
 const RedisStore = connectRedis(session);
 const redisClient = redis.createClient({url: process.env.REDIS_URL, no_ready_check: true});
-// redisClient.auth(redisURL.auth.split(':')[1])
-
 
 const main = () => {
   const app = express();
@@ -32,11 +27,8 @@ const main = () => {
       ":remote-user [:date[clf]] ':method :status :url HTTP/:http-version' :body ':user-agent' - :response-time ms"
     )
   );
-  //   var corsOptions = {
-  //     origin: '*',
-  //     credentials: true };
 
-  // app.use(cors(corsOptions));
+  app.set("trust proxy", 1);
   app.use(cors({ origin: ["http://localhost:3000", 'https://techflip.vercel.app', 'https://dev-techflip.vercel.app'], credentials: true }));
 
 
@@ -50,7 +42,7 @@ const main = () => {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: true, // if true: only transmit cookie over https, in prod, always activate this
+        secure: process.env.NODE_ENV === 'production' ? true : false, // if true: only transmit cookie over https, in prod, always activate this
         httpOnly: true, // if true: prevents client side JS from reading the cookie
         maxAge: 1000 * 60 * 30, // session max age in milliseconds
         // explicitly set cookie to lax
